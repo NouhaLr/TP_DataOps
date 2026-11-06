@@ -1,3 +1,4 @@
+#TP1
 Q1
 	requirements.txt liste les bibliothèques et leurs versions. Votre binôme, une autre machine ou un serveur peuvent alors tout réinstaller à l’identique avec une seule commande. Avec un pip install pandas tapé à la main, personne ne sait quelles versions vous avez. C’est la reproductibilité.
 Q2
@@ -24,3 +25,28 @@ Q13
 	Le jour 2 est le plus dangereux. L’ancien script affiche un rapport d’apparence normale mais 100 fois trop grand, sans aucune alerte, et le directeur peut décider sur ce chiffre. Le jour 3, il plante, donc tout le monde le voit.
 Q14
 	Tout programme qui lance le pipeline : un planificateur (cron, Airflow), la CI GitHub Actions ou un script shell. Il lit le code de sortie 1 et sait que le pipeline a échoué. Il peut alors ne pas publier, alerter l’équipe ou lancer une relance.
+
+
+#tp2
+Q1	
+	Non. Sur la branche, main n’avait pas la règle 6. Elle est apparue avec git merge. C’est utile car le rapport de nuit tourne depuis main : on teste la règle à part, et main reste stable tant que la règle n’est pas validée.
+Q2	
+	Une pull request apporte une relecture par un collègue, une discussion, les tests automatiques (CI) avant la fusion, une approbation et une trace de qui a validé quoi. Un merge local ne fait rien de cela.
+Q3	
+	Recopiez votre ligne md5: ...dir. Elle identifie le contenu exact du dossier data/raw. Si un seul caractère change, le md5 devient complètement différent.
+Q4	
+	data/.gitignore, qui contient /raw.
+Q5	
+	Les fichiers sont nommés par le md5 de leur contenu. Deux versions différentes ne s’écrasent donc jamais, un même contenu n’est stocké qu’une fois et on peut vérifier l’intégrité d’un fichier.
+Q6	
+	raw.dvc ne contient que le md5 : le fichier est petit, donc le diff aussi. Il faut commiter pour que cette version des données soit liée à ce commit de code. Sans commit, le changement du pointeur n’est pas enregistré et on ne peut plus retrouver v2.
+Q7	
+	Non, le code n’a pas changé. Seules les données ont changé : 7 655,90 → 8 835,40 (+1 179,50, les 5 commandes en retard).
+Q8	
+	git checkout data-v1 -- data/raw.dvc a remis la fiche (le pointeur) à la version v1. dvc checkout a remis les vrais fichiers de data/raw en accord avec cette fiche.
+Q9	
+	Sans dvc checkout, la fiche dit v1 mais les fichiers sont encore en v2. Le pipeline tourne sur les mauvaises données et affiche 8835.40 en croyant avoir v1 : une erreur silencieuse, comme au TP1.
+Q10	
+	git clone a donné le code, l’historique, les tags, le pointeur raw.dvc et la config du remote. dvc pull a donné les vrais CSV, récupérés depuis le remote.
+Q11	
+	Le remote ne contiendrait que la v1. Le pointeur v2 demande des fichiers absents, donc dvc pull échoue avec une erreur de fichiers manquants. Le collègue ne peut obtenir aucun total fiable, ni 8835.40 ni un autre.
